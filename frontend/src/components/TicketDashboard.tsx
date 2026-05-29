@@ -4,6 +4,7 @@ import { getTickets } from "../api/ticket.api";
 import AvailableTickets from "./AvailableTickets";
 import ReservedTickets from "./ReservedTickets";
 import ConfirmedTickets from "./ConfirmedTickets";
+
 export default function TicketDashboard() {
     const [availableTickets, setAvailableTickets] = useState<AvailableTicket[]>([]);
     const [reservedTickets, setReservedTickets] = useState<ReservedTicket[]>([]);
@@ -25,11 +26,26 @@ export default function TicketDashboard() {
             })
             .catch(console.error);
     }, []);
+
+    const handleReserveSuccess = (reservedTicket: ReservedTicket) => {
+        setReservedTickets(prev => {
+            const reservedTickets = prev.filter(ticket => ticket.id !== reservedTicket.id);
+            return [...reservedTickets, reservedTicket];
+        });
+        setAvailableTickets(prev => prev.filter(ticket => ticket.id !== reservedTicket.id));
+    }
+    const handleConfirmSuccess = (confirmedTicket: ConfirmedTicket) => {
+        setConfirmedTickets(prev => {
+            const confirmedTickets = prev.filter(ticket => ticket.id !== confirmedTicket.id);
+            return [...confirmedTickets, confirmedTicket];
+        });
+        setReservedTickets(prev => prev.filter(ticket => ticket.id !== confirmedTicket.id));
+    }
     return (
         <div>
-            <AvailableTickets tickets={availableTickets} setTickets={setAvailableTickets} />
-            <ReservedTickets tickets={reservedTickets} setTickets={setReservedTickets} />
-            <ConfirmedTickets tickets={confirmedTickets} setTickets={setConfirmedTickets} />
+            <AvailableTickets tickets={availableTickets} onReserveSuccess={handleReserveSuccess} />
+            <ReservedTickets tickets={reservedTickets} onConfirmSuccess={handleConfirmSuccess} />
+            <ConfirmedTickets tickets={confirmedTickets}  />
         </div>
     )
 };

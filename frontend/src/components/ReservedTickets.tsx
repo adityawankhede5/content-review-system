@@ -1,13 +1,14 @@
 import { confirmTicket } from "../api/ticket.api";
 import ExpiryCountDown from "./ExpirtyCountDown";
-import type { ReservedTicket } from "../types";
+import type { ReservedTicket, ConfirmedTicket } from "../types";
+import { showToast } from "./utils/toast";
 
-export default function ReservedTickets({ tickets, setTickets }: { tickets: ReservedTicket[], setTickets: React.Dispatch<React.SetStateAction<ReservedTicket[]>> }) {
+export default function ReservedTickets({ tickets, onConfirmSuccess }: { tickets: ReservedTicket[], onConfirmSuccess: (confirmedTicket: ConfirmedTicket) => void }) {
     const handleConfirm = (ticketId: string) => {
         confirmTicket(ticketId)
-        .then(() => {
-            alert("Ticket confirmed successfully!");
-            setTickets(prev => prev.filter((ticket: any) => ticket.id !== ticketId));
+        .then((confirmedTicket) => {
+            showToast("Ticket confirmed successfully!")
+            onConfirmSuccess(confirmedTicket);
         })
         .catch(() => {
             alert("Failed to confirm ticket. Reservation might have expired.");

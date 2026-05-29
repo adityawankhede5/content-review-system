@@ -1,3 +1,5 @@
+import type { ConfirmedTicket, ReservedTicket } from "../types";
+
 export const getTickets = async (status: "available" | "reserved" | "confirmed") => {
     try {
         const respone = await fetch(`http://localhost:8080/api/v1/tickets/${status}`, {
@@ -19,7 +21,7 @@ export const getTickets = async (status: "available" | "reserved" | "confirmed")
     }
 }
 
-export const reserveTicket = async (ticketId: string) => {
+export const reserveTicket = async (ticketId: string): Promise<ReservedTicket> => {
     try {
         const response = await fetch(`http://localhost:8080/api/v1/tickets/${ticketId}/reserve`, {
             method: "POST",
@@ -33,14 +35,14 @@ export const reserveTicket = async (ticketId: string) => {
             throw new Error(errorData.message || "Failed to reserve ticket");
         }
         const data = await response.json();
-        return data;
+        return data as ReservedTicket;
     } catch (error) {
         console.error("Error reserving ticket:", error);
         throw error;
     }
 };
 
-export const confirmTicket = async (ticketId: string) => {
+export const confirmTicket = async (ticketId: string): Promise<ConfirmedTicket> => {
     try {
         const response = await fetch(`http://localhost:8080/api/v1/tickets/${ticketId}/confirm`, {
             method: "POST",
@@ -54,7 +56,7 @@ export const confirmTicket = async (ticketId: string) => {
             throw new Error(errorData.message || "Failed to confirm ticket");
         }
         const data = await response.json();
-        return data;
+        return data as ConfirmedTicket;
     } catch (error) {
         console.error("Error confirming ticket:", error);
         throw error;

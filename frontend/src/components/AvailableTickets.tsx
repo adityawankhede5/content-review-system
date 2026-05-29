@@ -1,13 +1,15 @@
 import { reserveTicket } from "../api/ticket.api";
-import type { AvailableTicket } from "../types";
+import type { AvailableTicket, ReservedTicket } from "../types";
+import { showToast } from "./utils/toast";
 
-export default function AvailableTickets({ tickets, setTickets }: { tickets: AvailableTicket[], setTickets: React.Dispatch<React.SetStateAction<AvailableTicket[]>> }) {
+export default function AvailableTickets({ tickets, onReserveSuccess }: { tickets: AvailableTicket[], onReserveSuccess: (ticket: ReservedTicket) => void }) {
     
     const handleReserve = (ticketId: string) => {
         reserveTicket(ticketId)
-        .then(() => {
-            alert("Ticket reserved successfully! Please complete your review within 20 minutes.");
-            setTickets(prev => prev.filter((ticket: any) => ticket.id !== ticketId));
+        .then((reservedTicket) => {
+            console.log("Ticket reserved:", reservedTicket);
+            showToast("Ticket reserved successfully! Please complete your review within 20 minutes.");
+            onReserveSuccess(reservedTicket);
         })
         .catch(() => {
             alert("Failed to reserve ticket. It might have been reserved by someone else.");

@@ -1,6 +1,6 @@
 import type { ConfirmedTicket } from "../types";
 
-export default function ConfirmedTickets({ tickets, setTickets }: { tickets: ConfirmedTicket[], setTickets: React.Dispatch<React.SetStateAction<ConfirmedTicket[]>> }) {
+export default function ConfirmedTickets({ tickets }: { tickets: ConfirmedTicket[] }) {
 
     return (
         <div>

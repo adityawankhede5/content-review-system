@@ -62,7 +62,7 @@ router.post("/:id/reserve", authMiddleware, async (_req, res) => {
     }
     const currentReviewer = _req.user;
     try {
-        await db.transaction(async (tx) => {
+        const reservedTicket = await db.transaction(async (tx) => {
             const updatedTicket = await tx.update(tickets).set({ status: "reserved" })
                 .where(and(
                     eq(tickets.id, ticketId),
@@ -73,13 +73,25 @@ router.post("/:id/reserve", authMiddleware, async (_req, res) => {
             if (updatedTicket.length === 0) {
                 throw new Error("Failed to reserve ticket. It might have been reserved by someone else.");
             }
-            await tx.insert(assignments).values({
+            const [assignment] = await tx.insert(assignments).values({
                 reviewerId: currentReviewer.id,
                 ticketId: ticketId,
                 expiresAt: new Date(Date.now() + TICKET_EXPIRATION_TIME)
             })
+            .returning({
+                reservedAt: assignments.reservedAt,
+                expiresAt: assignments.expiresAt,
+                status: assignments.status
+            });
+            return {
+                id: ticketId,
+                locale: currentReviewer.locale,
+                reservedAt: assignment.reservedAt,
+                expiresAt: assignment.expiresAt,
+                status: assignment.status
+            }
         });
-        return res.json({ message: "Ticket reserved successfully" });
+        return res.json(reservedTicket);
     } catch (error) {
         console.error("Error reserving ticket:", error);
         res.status(500).json({ message: "Failed to reserve ticket" });
@@ -95,7 +107,7 @@ router.post("/:id/confirm", authMiddleware, async (_req, res) => {
     const currentReviewer = _req.user;
 
     try {
-        await db.transaction(async (tx) => {
+        const confirmedTicket = await db.transaction(async (tx) => {
             const updatedReservation = await tx.update(assignments).set({ status: "confirmed", confirmedAt: new Date() })
                 .where(and(
                     eq(assignments.ticketId, ticketId),
@@ -107,9 +119,17 @@ router.post("/:id/confirm", authMiddleware, async (_req, res) => {
             if (updatedReservation.length === 0) {
                 throw new Error("Reservation expired or invalid");
             }
-            await tx.update(tickets).set({ status: "confirmed" }).where(eq(tickets.id, ticketId));
+            await tx.update(tickets).set({ status: "confirmed" })
+                .where(eq(tickets.id, ticketId))
+            return {
+                id: ticketId,
+                locale: currentReviewer.locale,
+                reservedAt: updatedReservation[0].reservedAt,
+                confirmedAt: updatedReservation[0].confirmedAt,
+                status: updatedReservation[0].status
+            }
         });
-        return res.json({ message: "Ticket confirmed successfully" });
+        return res.json(confirmedTicket);
     } catch (error) {
         console.error("Error confirming ticket:", error);
         res.status(500).json({ message: "Failed to confirm ticket" });
