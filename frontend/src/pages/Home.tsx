@@ -1,21 +1,15 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../api/auth.api";
-import AvailableTickets from "../components/AvailableTickets";
-import ReservedTickets from "../components/ReservedTickets";
-import ConfirmedTickets from "../components/ConfirmedTickets";
 import TicketDashboard from "../components/TicketDashboard";
 export default function Home() {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const navigate = useNavigate();
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
         if (!token) {
-            setIsAuthenticated(false);
             navigate("/login");
             return;
         }
-        setIsAuthenticated(true);
     }, []);
     return (
         <div>
