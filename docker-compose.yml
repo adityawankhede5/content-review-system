@@ -25,6 +25,7 @@ services:
       DATABASE_URL: postgres://postgres:postgres@db:5432/content_review_system
       PORT: 8080
       NODE_ENV: production
+      JWT_SECRET: abracadabra
     depends_on:
       db:
         condition: service_healthy
