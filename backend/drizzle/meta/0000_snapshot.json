@@ -1,5 +1,5 @@
 {
-  "id": "f8195044-8504-4997-a6c7-78f317e388a1",
+  "id": "b5458d9f-1b2c-4077-878e-564c550861f3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -54,7 +54,72 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "idx_assignments_reviewer_id_status_expires_at": {
+          "name": "idx_assignments_reviewer_id_status_expires_at",
+          "columns": [
+            {
+              "expression": "reviewerId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "expires_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_assignments_status_expires_at": {
+          "name": "idx_assignments_status_expires_at",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "expires_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "unique_reserved_ticket": {
+          "name": "unique_reserved_ticket",
+          "columns": [
+            {
+              "expression": "ticketId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"assignments\".\"status\" = 'reserved'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "assignments_reviewerId_reviewers_id_fk": {
           "name": "assignments_reviewerId_reviewers_id_fk",
@@ -160,7 +225,29 @@
           "default": "'available'"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "idx_tickets_locale_status": {
+          "name": "idx_tickets_locale_status",
+          "columns": [
+            {
+              "expression": "locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},

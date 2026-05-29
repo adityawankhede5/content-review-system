@@ -1,5 +1,5 @@
 import { pgTable, text, uuid, varchar, timestamp, index, uniqueIndex } from "drizzle-orm/pg-core";
-import { eq } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 
 export const reviewers = pgTable("reviewers", {
     id: uuid().defaultRandom().primaryKey(),
@@ -27,5 +27,5 @@ export const assignments = pgTable("assignments", {
 }, (table) => [
     index("idx_assignments_reviewer_id_status_expires_at").on(table.reviewerId, table.status, table.expiresAt),
     index("idx_assignments_status_expires_at").on(table.status, table.expiresAt),
-    uniqueIndex("unique_reserved_ticket").on(table.ticketId).where(eq(table.status, "reserved"))
+    uniqueIndex("unique_reserved_ticket").on(table.ticketId).where(sql`${table.status} = 'reserved'`)
 ]);

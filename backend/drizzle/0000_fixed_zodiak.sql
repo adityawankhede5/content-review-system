@@ -23,4 +23,8 @@ CREATE TABLE "tickets" (
 );
 --> statement-breakpoint
 ALTER TABLE "assignments" ADD CONSTRAINT "assignments_reviewerId_reviewers_id_fk" FOREIGN KEY ("reviewerId") REFERENCES "public"."reviewers"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "assignments" ADD CONSTRAINT "assignments_ticketId_tickets_id_fk" FOREIGN KEY ("ticketId") REFERENCES "public"."tickets"("id") ON DELETE no action ON UPDATE no action;
+ALTER TABLE "assignments" ADD CONSTRAINT "assignments_ticketId_tickets_id_fk" FOREIGN KEY ("ticketId") REFERENCES "public"."tickets"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "idx_assignments_reviewer_id_status_expires_at" ON "assignments" USING btree ("reviewerId","status","expires_at");--> statement-breakpoint
+CREATE INDEX "idx_assignments_status_expires_at" ON "assignments" USING btree ("status","expires_at");--> statement-breakpoint
+CREATE UNIQUE INDEX "unique_reserved_ticket" ON "assignments" USING btree ("ticketId") WHERE "assignments"."status" = 'reserved';--> statement-breakpoint
+CREATE INDEX "idx_tickets_locale_status" ON "tickets" USING btree ("locale","status");
