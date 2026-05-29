@@ -12,22 +12,30 @@ export default function Home() {
         }
     }, []);
     return (
-        <div>
-            <header
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: "1rem",
-                }}
-            >
-                <h2>{localStorage.getItem("reviewerName")} ({localStorage.getItem("reviewerLocale")})</h2>
-                <button onClick={logout}>Logout</button>
+        <div className="min-h-screen bg-gray-50">
+            <header className="border-b border-gray-200 bg-white">
+                <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+                    <div>
+                        <h2 className="text-lg font-semibold text-gray-900">
+                            {localStorage.getItem("reviewerName")}
+                        </h2>
+                        <p className="text-sm text-gray-500">
+                            {localStorage.getItem("reviewerLocale")}
+                        </p>
+                    </div>
+
+                    <button
+                        onClick={logout}
+                        className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+                    >
+                        Logout
+                    </button>
+                </div>
             </header>
-            <main style={{ padding: "1rem" }}>
+
+            <main className="mx-auto max-w-7xl px-6 py-6">
                 <TicketDashboard />
             </main>
-
         </div>
-    )
+    );
 }

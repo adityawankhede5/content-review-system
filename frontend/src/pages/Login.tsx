@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import {REVIEWERS} from "../CONSTANTS";
+import { REVIEWERS } from "../CONSTANTS";
 import { login } from "../api/auth.api";
 export default function Login() {
     const navigate = useNavigate();
@@ -20,21 +20,45 @@ export default function Login() {
         navigate("/");
     };
     return (
-        <div>
-            <h1>Login Page</h1>
-            <p>This is a placeholder for the login page. Implement authentication here.</p>
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+            <div className="w-full max-w-md rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+                <h1 className="text-2xl font-semibold text-gray-900 mb-6">
+                    Login
+                </h1>
 
-            <form onSubmit={handleSubmit} style={{ display: "flex", gap: "1rem", width: "400px" }}>
-                <label htmlFor="reviewer">Select Reviewer:</label>
-                <select name="reviewer" id="reviewer">
-                    {REVIEWERS.map((reviewer) => (
-                        <option key={reviewer.email} value={reviewer.email}>
-                            {reviewer.name} - {reviewer.locale}
-                        </option>
-                    ))}
-                </select>
-                <button type="submit">Login</button>
-            </form>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="flex flex-col gap-2">
+                        <label
+                            htmlFor="reviewer"
+                            className="text-sm font-medium text-gray-700"
+                        >
+                            Select Reviewer
+                        </label>
+
+                        <select
+                            name="reviewer"
+                            id="reviewer"
+                            className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-gray-500"
+                        >
+                            {REVIEWERS.map((reviewer) => (
+                                <option
+                                    key={reviewer.email}
+                                    value={reviewer.email}
+                                >
+                                    {reviewer.name} - {reviewer.locale}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="w-full rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
+                    >
+                        Login
+                    </button>
+                </form>
+            </div>
         </div>
-    )
+    );
 }

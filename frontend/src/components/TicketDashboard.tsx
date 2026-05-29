@@ -42,10 +42,22 @@ export default function TicketDashboard() {
         setReservedTickets(prev => prev.filter(ticket => ticket.id !== confirmedTicket.id));
     }
     return (
-        <div>
-            <AvailableTickets tickets={availableTickets} onReserveSuccess={handleReserveSuccess} />
-            <ReservedTickets tickets={reservedTickets} onConfirmSuccess={handleConfirmSuccess} />
-            <ConfirmedTickets tickets={confirmedTickets}  />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <AvailableTickets
+                tickets={availableTickets}
+                onReserveSuccess={handleReserveSuccess}
+            />
+
+            <ReservedTickets
+                tickets={reservedTickets}
+                onConfirmSuccess={handleConfirmSuccess}
+            />
+
+            <div className="lg:col-span-2">
+                <ConfirmedTickets
+                    tickets={confirmedTickets}
+                />
+            </div>
         </div>
-    )
+    );
 };
