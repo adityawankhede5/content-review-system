@@ -208,4 +208,4 @@ The core implementation decisions, data model, API flow, and final code were rev
 
 ## Walkthrough Video
 
-Loom link: `<add-link>`
+Loom link: https://www.loom.com/share/0fd12c95a7624433afd8fd132792afa8
