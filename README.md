@@ -198,6 +198,14 @@ This keeps ticket lifecycle data separate from reservation audit data and suppor
 
 ---
 
+## LLM Usage
+
+LLM tools were used as a development aid for this assignment. I used them to polish the frontend UI, review the code for possible gaps and edge cases, and help design the `/metrics` endpoint.
+
+The core implementation decisions, data model, API flow, and final code were reviewed and adapted by me to fit the assignment requirements.
+
+---
+
 ## Walkthrough Video
 
 Loom link: `<add-link>`
