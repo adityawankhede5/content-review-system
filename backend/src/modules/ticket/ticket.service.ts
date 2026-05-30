@@ -1,7 +1,8 @@
-import { and, desc, eq, gte, gt } from "drizzle-orm"
+import { and, desc, eq, gte, gt, count, sql } from "drizzle-orm"
 import { db } from "../../db"
 import { tickets, assignments } from "../../db/schema"
 import { JWTPayload } from "../../types/auth";
+import { Metrics } from "../../types/metrics.types";
 
 // const TICKET_EXPIRATION_TIME = 20 * 60 * 1000; // 20 minutes
 const TICKET_EXPIRATION_TIME = 1 * 60 * 1000; // 1 minute
@@ -11,7 +12,7 @@ export const getAvailableTickets = async (locale: string) => {
         eq(tickets.locale, locale),
         eq(tickets.status, "available")
     ))
-    .orderBy(tickets.enqueuedAt)
+        .orderBy(tickets.enqueuedAt)
     return localeTickets;
 }
 
@@ -23,14 +24,14 @@ export const getReservedTicketsForReviewer = async (reviewerId: string) => {
         expiresAt: assignments.expiresAt,
         status: assignments.status
     })
-    .from(tickets)
-    .innerJoin(assignments, eq(tickets.id, assignments.ticketId))
-    .where(and(
-        eq(assignments.reviewerId, reviewerId),
-        eq(assignments.status, "reserved"),
-        gte(assignments.expiresAt, new Date())
-    ))
-    .orderBy(assignments.reservedAt)
+        .from(tickets)
+        .innerJoin(assignments, eq(tickets.id, assignments.ticketId))
+        .where(and(
+            eq(assignments.reviewerId, reviewerId),
+            eq(assignments.status, "reserved"),
+            gte(assignments.expiresAt, new Date())
+        ))
+        .orderBy(assignments.reservedAt)
     return reservedTickets;
 }
 
@@ -43,13 +44,13 @@ export const getConfirmedTicketsForReviewer = async (reviewerId: string) => {
         confirmedAt: assignments.confirmedAt,
         status: assignments.status
     })
-    .from(tickets)
-    .innerJoin(assignments, eq(tickets.id, assignments.ticketId))
-    .where(and(
-        eq(assignments.reviewerId, reviewerId),
-        eq(assignments.status, "confirmed")
-    ))
-    .orderBy(desc(assignments.confirmedAt))
+        .from(tickets)
+        .innerJoin(assignments, eq(tickets.id, assignments.ticketId))
+        .where(and(
+            eq(assignments.reviewerId, reviewerId),
+            eq(assignments.status, "confirmed")
+        ))
+        .orderBy(desc(assignments.confirmedAt))
     return confirmedTickets;
 }
 
@@ -58,11 +59,11 @@ export const reserveTicketForReviewer = async (ticketId: string, reviewer: JWTPa
         const updatedTickets = await tx.update(tickets).set({
             status: "reserved"
         })
-        .where(and(
-            eq(tickets.id, ticketId),
-            eq(tickets.status, "available")
-        ))
-        .returning()
+            .where(and(
+                eq(tickets.id, ticketId),
+                eq(tickets.status, "available")
+            ))
+            .returning()
 
         if (updatedTickets.length == 0) {
             throw new Error("Ticket already reserved")
@@ -98,17 +99,17 @@ export const confirmTicketForReviewer = async (ticketId: string, reviewer: JWTPa
             status: "confirmed",
             confirmedAt: new Date()
         })
-        .where(and(
-            eq(assignments.reviewerId, reviewer.id),
-            eq(assignments.ticketId, ticketId),
-            eq(assignments.status, "reserved"),
-            gt(assignments.expiresAt, new Date())
-        ))
-        .returning({
-            reservedAt: assignments.reservedAt,
-            confirmedAt: assignments.confirmedAt,
-            status: assignments.status
-        })
+            .where(and(
+                eq(assignments.reviewerId, reviewer.id),
+                eq(assignments.ticketId, ticketId),
+                eq(assignments.status, "reserved"),
+                gt(assignments.expiresAt, new Date())
+            ))
+            .returning({
+                reservedAt: assignments.reservedAt,
+                confirmedAt: assignments.confirmedAt,
+                status: assignments.status
+            })
         console.log(updatedAssignments)
         if (updatedAssignments.length == 0) {
             throw new Error("Ticket not reserved or expired")
@@ -116,8 +117,8 @@ export const confirmTicketForReviewer = async (ticketId: string, reviewer: JWTPa
         await tx.update(tickets).set({
             status: "confirmed"
         })
-        .where(eq(tickets.id, ticketId))
-        
+            .where(eq(tickets.id, ticketId))
+
         return {
             id: ticketId,
             locale: reviewer.locale,

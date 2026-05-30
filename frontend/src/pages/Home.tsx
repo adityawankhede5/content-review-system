@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../api/auth.api";
 import TicketDashboard from "../components/TicketDashboard";
+import MetricsDashboard from "../components/MetricsDashboard/MetricsDashboard";
 export default function Home() {
     const navigate = useNavigate();
     useEffect(() => {
@@ -35,6 +36,7 @@ export default function Home() {
 
             <main className="mx-auto max-w-7xl px-6 py-6">
                 <TicketDashboard />
+                <MetricsDashboard />
             </main>
         </div>
     );
