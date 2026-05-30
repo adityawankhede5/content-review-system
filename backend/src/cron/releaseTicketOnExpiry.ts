@@ -14,7 +14,7 @@ export function startReleaseTicketOnExpiryCron() {
                         lte(assignments.expiresAt, new Date())
                     ))
                     .returning();
-                
+
                 if (updatedAssignments.length === 0) {
                     console.log("[CRON] No assignments to update");
                     return;
@@ -22,7 +22,10 @@ export function startReleaseTicketOnExpiryCron() {
 
                 console.log("[CRON] Updated assignments:", updatedAssignments.length);
 
-                const updatedTickets = await tx.update(tickets).set({ status: "available" })
+                const updatedTickets = await tx.update(tickets).set({
+                    status: "available",
+                    enqueuedAt: new Date()
+                })
                     .where(inArray(tickets.id, updatedAssignments.map((a) => a.ticketId)))
                     .returning();
 

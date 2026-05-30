@@ -1,4 +1,4 @@
-import { and, eq, gte, lte } from "drizzle-orm"
+import { and, asc, desc, eq, gte, lte } from "drizzle-orm"
 import { db } from "../../db"
 import { tickets, assignments } from "../../db/schema"
 import { JWTPayload } from "../../types/auth";
@@ -11,6 +11,7 @@ export const getAvailableTickets = async (locale: string) => {
         eq(tickets.locale, locale),
         eq(tickets.status, "available")
     ))
+    .orderBy(tickets.enqueuedAt)
     return localeTickets;
 }
 
@@ -28,7 +29,8 @@ export const getReservedTicketsForReviewer = async (reviewerId: string) => {
         eq(assignments.reviewerId, reviewerId),
         eq(assignments.status, "reserved"),
         gte(assignments.expiresAt, new Date())
-    ));
+    ))
+    .orderBy(assignments.reservedAt)
     return reservedTickets;
 }
 
@@ -47,6 +49,7 @@ export const getConfirmedTicketsForReviewer = async (reviewerId: string) => {
         eq(assignments.reviewerId, reviewerId),
         eq(assignments.status, "confirmed")
     ))
+    .orderBy(desc(assignments.confirmedAt))
     return confirmedTickets;
 }
 

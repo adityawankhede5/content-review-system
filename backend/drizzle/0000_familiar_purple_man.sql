@@ -3,9 +3,9 @@ CREATE TABLE "assignments" (
 	"reviewerId" uuid NOT NULL,
 	"ticketId" uuid NOT NULL,
 	"status" varchar DEFAULT 'reserved' NOT NULL,
-	"reserved_at" timestamp DEFAULT now() NOT NULL,
-	"expires_at" timestamp NOT NULL,
-	"confirmed_at" timestamp
+	"reserved_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"expires_at" timestamp with time zone NOT NULL,
+	"confirmed_at" timestamp with time zone
 );
 --> statement-breakpoint
 CREATE TABLE "reviewers" (
@@ -19,7 +19,9 @@ CREATE TABLE "reviewers" (
 CREATE TABLE "tickets" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"locale" varchar(255) NOT NULL,
-	"status" varchar DEFAULT 'available' NOT NULL
+	"status" varchar DEFAULT 'available' NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"enqueued_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 ALTER TABLE "assignments" ADD CONSTRAINT "assignments_reviewerId_reviewers_id_fk" FOREIGN KEY ("reviewerId") REFERENCES "public"."reviewers"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint

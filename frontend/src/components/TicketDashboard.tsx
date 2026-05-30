@@ -37,7 +37,7 @@ export default function TicketDashboard() {
     const handleConfirmSuccess = (confirmedTicket: ConfirmedTicket) => {
         setConfirmedTickets(prev => {
             const confirmedTickets = prev.filter(ticket => ticket.id !== confirmedTicket.id);
-            return [...confirmedTickets, confirmedTicket];
+            return [confirmedTicket, ...confirmedTickets];
         });
         setReservedTickets(prev => prev.filter(ticket => ticket.id !== confirmedTicket.id));
     }
