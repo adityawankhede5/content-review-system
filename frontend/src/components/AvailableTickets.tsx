@@ -18,7 +18,7 @@ export default function AvailableTickets({ tickets, onReserveSuccess }: { ticket
     return (
         <div className="flex h-full max-h-[500px] flex-col rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
             <h3 className="mb-4 text-lg font-semibold text-gray-900 shrink-0">
-                Available Tickets
+                Available Tickets ({tickets.length})
             </h3>
 
             <div className="min-h-0 flex-1 overflow-auto">

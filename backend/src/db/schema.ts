@@ -1,6 +1,8 @@
 import { pgTable, text, uuid, varchar, timestamp, index, uniqueIndex } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
+export const locales = ["East Coast", "West Coast", "Midwest", "South"];
+
 export const reviewers = pgTable("reviewers", {
     id: uuid().defaultRandom().primaryKey(),
     name: varchar("name", { length: 255 }).notNull(),

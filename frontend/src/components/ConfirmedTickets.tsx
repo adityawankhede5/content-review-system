@@ -5,7 +5,7 @@ export default function ConfirmedTickets({ tickets }: { tickets: ConfirmedTicket
     return (
         <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
             <h3 className="mb-4 text-lg font-semibold text-gray-900">
-                Confirmed Tickets
+                Confirmed Tickets ({tickets.length})
             </h3>
 
             <div className="overflow-x-auto">

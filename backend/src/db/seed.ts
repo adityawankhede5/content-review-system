@@ -1,7 +1,5 @@
 import { db } from "./index";
-import { reviewers, tickets } from "./schema";
-
-const locales = ["East Coast", "West Coast", "Midwest", "South"];
+import { reviewers, tickets, locales } from "./schema";
 
 const reviewersSeed = [
   { name: 'Emily Johnson', locale: 'East Coast', email: 'emily.johnson@example.com' },
@@ -26,7 +24,7 @@ const reviewersSeed = [
   { name: 'Sarah Brown', locale: 'East Coast', email: 'sarah.brown@example.com' },
 ];
 
-const ticketsSeed = new Array(100).fill(0).map((_, index) => ({
+const ticketsSeed = new Array(50).fill(0).map((_, index) => ({
   locale: locales[Math.floor(Math.random() * locales.length)],
 }));
 
