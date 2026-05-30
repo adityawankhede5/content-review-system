@@ -168,12 +168,23 @@ Index on Available tickets include `locale`, hence locale based filtering is per
 
 PostgreSQL acts as the single source of truth for ticket state, reservation ownership, expiry, and queue ordering. This avoids synchronization issues across multiple in-memory queues or workers.
 
+### Separate Ticket and Assignment Records
+
+Tickets and assignments are modeled as separate tables:
+
+- `tickets` represent queue items and their current lifecycle state.
+- `assignments` represent reviewer ownership, reservation timing, and confirmation history.
+
+This keeps ticket lifecycle data separate from reservation audit data and supports future history/reporting requirements.
+
 ---
 
 ## Assumptions
 
 - Ticket ingestion during application startup is acceptable for this assignment and does not require an external scheduler.
 - Reservation expiry precision within a cron interval (up to 59 seconds) is acceptable because confirmation performs an additional expiry validation.
+- Locale values are a fixed controlled set: `East Coast`, `West Coast`, `Midwest`, `South`.
+- Confirmed tickets are terminal and do not return to the queue.
 
 
 ---
@@ -181,8 +192,9 @@ PostgreSQL acts as the single source of truth for ticket state, reservation owne
 
 ## Trade-offs
 
-- A cron-based expiry system was chosen for simplicity over event-driven timers, at the cost of up to ~59 seconds delay in releasing reservations.
-- PostgreSQL is used as a lightweight queueing mechanism instead of dedicated queue infrastructure (Redis/Kafka), reducing complexity but limiting horizontal scalability for very high throughput workloads.
+- PostgreSQL queueing provides simpler deployment and stronger consistency in one datastore compared to Redis/Kafka, but is less suitable for very high-throughput queue workloads.
+- Cron-based expiry is easy to reason about and containerize compared to exact timers, but expiry release is only as precise as the cron interval.
+- Polling/manual refresh in the UI keeps the frontend and backend flow simple compared to SSE/WebSockets, but updates are not real-time.
 
 ---
 
