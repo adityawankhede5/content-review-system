@@ -1,11 +1,12 @@
 import { count, sql } from "drizzle-orm";
 import { db } from "../../db";
-import { Metrics } from "../../types/metrics.types";
+import { LocaleMetrics } from "../../types/metrics.types";
 import { tickets } from "../../db/schema";
 
-export const getMetrics = async (): Promise<Metrics> => {
-    const [result] = await db
+export const getMetrics = async (): Promise<LocaleMetrics[]> => {
+    const results = await db
         .select({
+            locale: tickets.locale,
             totalTickets: count(tickets.id),
             available: count(
                 sql`CASE WHEN ${tickets.status} = 'available' THEN 1 END`
@@ -17,12 +18,14 @@ export const getMetrics = async (): Promise<Metrics> => {
                 sql`CASE WHEN ${tickets.status} = 'confirmed' THEN 1 END`
             ),
         })
-        .from(tickets);
+        .from(tickets)
+        .groupBy(sql`ROLLUP(${tickets.locale})`);
 
-    return {
-        totalTickets: Number(result?.totalTickets ?? 0),
-        available: Number(result?.available ?? 0),
-        reserved: Number(result?.reserved ?? 0),
-        confirmed: Number(result?.confirmed ?? 0),
-    };
-}
+    return results.map((result) => ({
+        locale: result.locale ?? "all",
+        totalTickets: Number(result.totalTickets ?? 0),
+        available: Number(result.available ?? 0),
+        reserved: Number(result.reserved ?? 0),
+        confirmed: Number(result.confirmed ?? 0),
+    }));
+};

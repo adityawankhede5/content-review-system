@@ -1,6 +1,6 @@
-import type { Metrics } from "../components/MetricsDashboard/metrics.types";
+import type { LocaleMetrics } from "../components/MetricsDashboard/metrics.types";
 
-export const getMetrics = async () : Promise<Metrics> => {
+export const getMetrics = async () : Promise<LocaleMetrics[]> => {
     try {
         const respone = await fetch(`http://localhost:8080/api/v1/metrics`, {
             method: "GET",

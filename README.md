@@ -114,6 +114,16 @@ Confirms a ticket if:
 * the reservation belongs to the authenticated reviewer
 * the reservation has not expired
 
+---
+
+### Metrics
+
+#### Get Metrics
+
+```http
+GET metrics
+```
+
 
 ---
 

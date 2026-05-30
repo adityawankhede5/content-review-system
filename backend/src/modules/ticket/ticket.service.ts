@@ -2,7 +2,6 @@ import { and, desc, eq, gte, gt, count, sql } from "drizzle-orm"
 import { db } from "../../db"
 import { tickets, assignments } from "../../db/schema"
 import { JWTPayload } from "../../types/auth";
-import { Metrics } from "../../types/metrics.types";
 
 // const TICKET_EXPIRATION_TIME = 20 * 60 * 1000; // 20 minutes
 const TICKET_EXPIRATION_TIME = 1 * 60 * 1000; // 1 minute
