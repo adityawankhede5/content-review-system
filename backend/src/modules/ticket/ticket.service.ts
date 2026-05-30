@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, gte, lte } from "drizzle-orm"
+import { and, desc, eq, gte, gt } from "drizzle-orm"
 import { db } from "../../db"
 import { tickets, assignments } from "../../db/schema"
 import { JWTPayload } from "../../types/auth";
@@ -102,7 +102,7 @@ export const confirmTicketForReviewer = async (ticketId: string, reviewer: JWTPa
             eq(assignments.reviewerId, reviewer.id),
             eq(assignments.ticketId, ticketId),
             eq(assignments.status, "reserved"),
-            gte(assignments.expiresAt, new Date())
+            gt(assignments.expiresAt, new Date())
         ))
         .returning({
             reservedAt: assignments.reservedAt,

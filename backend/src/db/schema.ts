@@ -14,10 +14,10 @@ export const tickets = pgTable("tickets", {
     id: uuid().defaultRandom().primaryKey(),
     locale: varchar("locale", { length: 255 }).notNull(),
     status: varchar("status", { enum: ["available", "reserved", "confirmed"] }).default("available").notNull(),
-    createAt: timestamp("created_at", { withTimezone: true}).defaultNow().notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true}).defaultNow().notNull(),
     enqueuedAt: timestamp("enqueued_at", { withTimezone: true}).defaultNow().notNull()
 }, (table) => [
-    index("idx_tickets_locale_status").on(table.locale, table.status)
+    index("idx_tickets_locale_status_enqueued").on(table.locale, table.status, table.enqueuedAt)
 ]);
 
 export const assignments = pgTable("assignments", {
