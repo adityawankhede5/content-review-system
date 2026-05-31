@@ -4,7 +4,7 @@ import { assignments, tickets } from "../db/schema";
 import { eq, lte, inArray, and } from "drizzle-orm";
 
 export function startReleaseTicketOnExpiryCron() {
-    cron.schedule("*/5 * * * * *", async () => {
+    cron.schedule("0 */1 * * * *", async () => {
         try {
             await db.transaction(async (tx) => {
 

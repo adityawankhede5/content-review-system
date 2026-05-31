@@ -3,8 +3,8 @@ import { db } from "../../db"
 import { tickets, assignments } from "../../db/schema"
 import { JWTPayload } from "../../types/auth";
 
-// const TICKET_EXPIRATION_TIME = 20 * 60 * 1000; // 20 minutes
-const TICKET_EXPIRATION_TIME = 1 * 60 * 1000; // 1 minute
+const TICKET_EXPIRATION_TIME = 20 * 60 * 1000; // 20 minutes
+// const TICKET_EXPIRATION_TIME = 1 * 60 * 1000; // 1 minute
 
 export const getAvailableTickets = async (locale: string) => {
     const localeTickets = await db.select().from(tickets).where(and(
